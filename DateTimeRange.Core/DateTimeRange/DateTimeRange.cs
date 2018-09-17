@@ -25,59 +25,67 @@ namespace DateTimeRangeCore.DateTimeRange
 		}
 
 		public bool Equals(DateTimeRange other)
-			=> !ReferenceEquals(other, null)
-				&& End == other.End
-				&& Begin == other.Begin;
+		{
+			return End == other.End && Start == other.Start;
+		}
 
 		public static bool operator ==(DateTimeRange dateTimeRange1, DateTimeRange dateTimeRange2)
-			=> ReferenceEquals(dateTimeRange1, dateTimeRange2) 
-			||(!ReferenceEquals(dateTimeRange1, null) 
-			&& dateTimeRange1.Equals(dateTimeRange2));
+		{
+			return Equals(dateTimeRange1, dateTimeRange2) || (dateTimeRange1.Equals(dateTimeRange2));
+		}
 
 		public static bool operator !=(DateTimeRange first, DateTimeRange second)
-			=> !(first == second);
+		{
+			return !(first == second);
+		}
 
 		public override int GetHashCode()
-			=> End.GetHashCode();
+		{
+			return base.GetHashCode();
+		}
 
 		public override bool Equals(object obj)
-			=> Equals((DateTimeRange)obj);
+		{
+			return obj != null && Equals((DateTimeRange)obj);
+		}
 
 		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin) 
 			=> new DateTimeRange() { End = range.End, Begin = range.Begin + begin };
 
 		public static IEnumerable<DateTimeRange> Create(IDictionary<DateTime, bool> pulse)
 		{
-			List<DateTimeRange> result = new List<DateTimeRange>();
-			
-			foreach (var item in pulse)
-			{
-				
-				if (item.Value == false)
-				{
+			return GetListsByPulse(pulse);
+		}
 
+		private static List<DateTimeRange> GetListsByPulse(IDictionary<DateTime, bool> pulse)
+		{
+			List<DateTimeRange> result = new List<DateTimeRange>();
+
+			List<KeyValuePair<DateTime, bool>> items = new List<KeyValuePair<DateTime, bool>>();
+				
+			for (int i = 0; i < pulse.Count; i++)
+			{
+				items.Add(pulse.ElementAt(i));
+
+				if (!pulse.ElementAt(i).Value || pulse.ElementAt(i).Equals(pulse.Last()))
+				{
+					result.Add(GetDateTimeRange(items));
+
+					items.Clear();
 				}
 			}
 
 			return result;
 		}
 
-		private static DateTimeRange GetDateTimeRange(IDictionary<DateTime, bool> dicts)
+		private static DateTimeRange GetDateTimeRange(List<KeyValuePair<DateTime, bool>> items)
 		{
-			DateTime start = DateTime.MinValue;
-			DateTime end = DateTime.MinValue;
+			return new DateTimeRange{End = items.First().Key, Start = items.Last().Key};
+		}
 
-			start = dicts.First().Key;
-
-			foreach (var item in dicts)
-			{
-				if (item.Value == false || item.Equals(dicts.Last()))
-				{
-					end = item.Key;
-				}
-			}
-
-			return new DateTimeRange{End = end, Start = start };
+		public override string ToString()
+		{
+			return $"Start - {Start.ToString()}; End - {End.ToString()}";
 		}
 	}
 }
