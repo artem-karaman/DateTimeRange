@@ -55,5 +55,28 @@ namespace DateTimeRangeTest.Test
 			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(1), begin.AddMinutes(3)), ranges.First());
 			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(4), begin.AddMinutes(5)), ranges.Last());
 		}
+
+		[TestMethod]
+		public void CreateFromValuesTest()
+		{
+			// arrange
+			var begin = DateTime.Today;
+			var values = new Dictionary<DateTime, int>
+			{
+				[begin.AddMinutes(1)] = 3,
+				[begin.AddMinutes(2)] = 6,
+				[begin.AddMinutes(3)] = 1,
+				[begin.AddMinutes(4)] = 3,
+				[begin.AddMinutes(5)] = 5,
+			};
+
+			// act
+			var ranges = DateTimeRange.Create(values, 2);
+
+			// assert
+			Assert.AreEqual(2, ranges.Count());
+			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(1), begin.AddMinutes(3)), ranges.First());
+			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(4), begin.AddMinutes(5)), ranges.Last());
+		}
 	}
 }
