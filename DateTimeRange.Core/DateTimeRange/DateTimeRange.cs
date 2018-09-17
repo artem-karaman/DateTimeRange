@@ -2,14 +2,14 @@
 
 namespace DateTimeRangeCore.DateTimeRange
 {
-	public class DateTimeRange : IEquatable<DateTimeRange>
+	public struct DateTimeRange : IEquatable<DateTimeRange>
 	{
 		public DateTime End { get; private set; }
 		public TimeSpan Begin { get; private set; }
 		public DateTimeRange(DateTime end, TimeSpan begin)
 		{
-			this.End = end;
-			this.Begin = begin;
+			Begin = begin;
+			End = end;
 		}
 
 		public bool Equals(DateTimeRange other)
@@ -25,10 +25,17 @@ namespace DateTimeRangeCore.DateTimeRange
 		public static bool operator !=(DateTimeRange first, DateTimeRange second)
 			=> !(first == second);
 
-		public override bool Equals(object obj) 
-			=> Equals(obj as DateTimeRange);
-
 		public override int GetHashCode()
 			=> End.GetHashCode();
+
+		public override bool Equals(object obj)
+		{
+			return Equals((DateTimeRange)obj);
+		}
+
+		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin)
+		{
+			return new DateTimeRange() { End = range.End, Begin = range.Begin + begin};
+		}
 	}
 }
