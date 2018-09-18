@@ -56,9 +56,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DateTimeRange.Core\DateTimeRange.Core.csproj">
+    <ProjectReference Include="..\DateTimeRange.Core\DateTimeRangeCore.csproj">
       <Project>{94bbd4bd-fbff-49cd-86b6-3f3aabfee51e}</Project>
-      <Name>DateTimeRange.Core</Name>
+      <Name>DateTimeRangeCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

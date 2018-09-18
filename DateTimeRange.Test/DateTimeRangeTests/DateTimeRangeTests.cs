@@ -78,5 +78,36 @@ namespace DateTimeRangeTest.Test
 			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(1), begin.AddMinutes(3)), ranges.First());
 			Assert.AreEqual(new DateTimeRange(begin.AddMinutes(4), begin.AddMinutes(5)), ranges.Last());
 		}
+
+		[TestMethod]
+		public void MergeTest()
+		{
+			/*
+             |---|
+             |-----|
+                      |---|
+                             |---|
+                                 |---|
+
+             |-----|  |---|  |-------|
+             */
+
+			// arrange
+			var now = DateTime.Now;
+			var range1 = new DateTimeRange(now, TimeSpan.FromHours(1));                              // 00:00 - 01:00
+			var range1plus = range1 + TimeSpan.FromMinutes(30);                                      // 00:00 - 01:30
+			var range2 = new DateTimeRange(range1plus.End.AddMinutes(30), TimeSpan.FromMinutes(30)); // 02:00 - 02:30
+			var range3 = new DateTimeRange(range2.End.AddMinutes(30), TimeSpan.FromMinutes(30));     // 03:00 - 03:30
+			var range3split = new DateTimeRange(range3.End, TimeSpan.FromMinutes(30));               // 03:30 - 04:00
+
+			// act
+			var merge = (new[] { range1, range2, range3, range1plus, range3split }).Merge().ToArray();
+
+			//// assert
+			Assert.AreEqual(3, merge.Length);
+			Assert.AreEqual(new DateTimeRange(range1plus.Begin, range1plus.End), merge[0]); // 00:00 - 01:30
+			//Assert.AreEqual(new DateTimeRange(range2.Begin, range2.End), merge[1]);         // 02:00 - 02:30
+			//Assert.AreEqual(new DateTimeRange(range3.Begin, range3split.End), merge[2]);    // 03:00 - 04:00
+		}
 	}
 }

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateTimeRange.Core", "DateTimeRange.Core\DateTimeRange.Core.csproj", "{94BBD4BD-FBFF-49CD-86B6-3F3AABFEE51E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateTimeRangeCore", "DateTimeRange.Core\DateTimeRangeCore.csproj", "{94BBD4BD-FBFF-49CD-86B6-3F3AABFEE51E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateTimeRange.Test", "DateTimeRange.Test\DateTimeRange.Test.csproj", "{4AE72CA7-5417-480A-834A-273E3116B22F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DateTimeRangeTest", "DateTimeRange.Test\DateTimeRangeTest.csproj", "{4AE72CA7-5417-480A-834A-273E3116B22F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

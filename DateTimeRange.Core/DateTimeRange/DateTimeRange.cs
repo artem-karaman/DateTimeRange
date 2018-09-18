@@ -1,26 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace DateTimeRangeCore.DateTimeRange
 {
 	public struct DateTimeRange : IEquatable<DateTimeRange>
 	{
-		public DateTime Start { get; private set; }
-		public DateTime End { get; private set; }
-		public TimeSpan Begin { get; private set; }
-		public DateTimeRange(DateTime end, TimeSpan begin)
+		private DateTime Start { get; }
+		public DateTime End { get; }
+		public TimeSpan Begin { get; }
+
+		public DateTimeRange(DateTime rangeFrom, TimeSpan rangeTo)
 		{
-			Begin = begin;
-			End = end;
-			Start = new DateTime(begin.Ticks);
+			Begin = rangeTo;
+			End = rangeFrom;
+			Start = new DateTime(rangeTo.Ticks);
 		}
 
-		public DateTimeRange(DateTime end, DateTime start)
+		public DateTimeRange(DateTime rangeFrom, DateTime start)
 		{
 			Start = start;
-			End = end;
-			Begin = new TimeSpan(end.Ticks);
+			End = rangeFrom;
+			Begin = TimeSpan.FromTicks(start.Ticks);
+		}
+
+		public DateTimeRange(TimeSpan rangeTo, DateTime rangeFrom)
+		{
+			Begin = rangeTo;
+			End = rangeFrom;
+			Start = new DateTime(rangeTo.Ticks);
 		}
 
 		public bool Equals(DateTimeRange other)
@@ -40,12 +49,7 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public override int GetHashCode()
 		{
-			return base.GetHashCode();
-		}
-
-		public int CompareTo(object obj)
-		{
-			throw new NotImplementedException();
+			return End.GetHashCode();
 		}
 
 		public override bool Equals(object obj)
@@ -55,12 +59,17 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin)
 		{
-			return new DateTimeRange() { End = range.End, Begin = range.Begin + begin };
+			return new DateTimeRange(range.End, new TimeSpan(range.Begin.Hours + begin.Hours, range.Begin.Minutes + begin.Minutes, range.Begin.Seconds + begin.Seconds));
 		}
 
 		public static IEnumerable<DateTimeRange> Create(IDictionary<DateTime, bool> pulse)
 		{
 			return GetListByPulse(pulse);
+		}
+		
+		public static IEnumerable<DateTimeRange> Create<T>(IDictionary<DateTime, T> values, T min)
+		{
+			return GetListByMinValue(values, min);
 		}
 
 		private static List<DateTimeRange> GetListByPulse(IDictionary<DateTime, bool> pulse)
@@ -82,16 +91,6 @@ namespace DateTimeRangeCore.DateTimeRange
 			}
 
 			return result;
-		}
-
-		//public override string ToString()
-		//{
-		//	return $"Start - {Start.ToString()}; End - {End.ToString()}";
-		//}
-
-		public static IEnumerable<DateTimeRange> Create<T>(IDictionary<DateTime, T> values, T min)
-		{
-			return GetListByMinValue(values, min);
 		}
 
 		private static List<DateTimeRange> GetListByMinValue<T>(IDictionary<DateTime, T> values, T min)
@@ -117,7 +116,12 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		private static DateTimeRange GetDateTimeRange<T>(List<KeyValuePair<DateTime, T>> items)
 		{
-			return new DateTimeRange { End = items.First().Key, Start = items.Last().Key };
+			return new DateTimeRange (items.First().Key, items.Last().Key);
+		}
+
+		public override string ToString()
+		{
+			return $"Start - {Start.ToString(CultureInfo.InvariantCulture)}; End - {End.ToString(CultureInfo.InvariantCulture)}";
 		}
 	}
 }
