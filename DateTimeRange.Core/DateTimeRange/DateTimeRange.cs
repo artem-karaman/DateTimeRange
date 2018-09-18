@@ -5,41 +5,41 @@ using System.Linq;
 
 namespace DateTimeRangeCore.DateTimeRange
 {
-	public struct DateTimeRange : IEquatable<DateTimeRange>
+	public class DateTimeRange : IEquatable<DateTimeRange>
 	{
-		private DateTime Start { get; }
-		public DateTime End { get; }
-		public TimeSpan Begin { get; }
+		private readonly DateTime end;
+		private readonly TimeSpan duration;
 
-		public DateTimeRange(DateTime rangeFrom, TimeSpan rangeTo)
+		public DateTime End => end;
+		public TimeSpan Begin => duration;
+
+		public DateTimeRange(DateTime end, TimeSpan duration)
 		{
-			Begin = rangeTo;
-			End = rangeFrom;
-			Start = new DateTime(rangeTo.Ticks);
+			this.end = end;
+			this.duration = duration;
 		}
 
-		public DateTimeRange(DateTime rangeFrom, DateTime start)
+		public DateTimeRange(DateTime start, DateTime end)
 		{
-			Start = start;
-			End = rangeFrom;
-			Begin = TimeSpan.FromTicks(start.Ticks);
+			this.end = end;
+			this.duration = end - start;
+			
 		}
 
-		public DateTimeRange(TimeSpan rangeTo, DateTime rangeFrom)
+		public DateTimeRange(TimeSpan duration, DateTime end)
 		{
-			Begin = rangeTo;
-			End = rangeFrom;
-			Start = new DateTime(rangeTo.Ticks);
+			this.end = end;
+			this.duration = duration;
 		}
 
 		public bool Equals(DateTimeRange other)
 		{
-			return End == other.End && Start == other.Start;
+			return Begin == other.Begin && End == other.End;
 		}
 
-		public static bool operator ==(DateTimeRange dateTimeRange1, DateTimeRange dateTimeRange2)
+		public static bool operator ==(DateTimeRange x, DateTimeRange y)
 		{
-			return Equals(dateTimeRange1, dateTimeRange2) || (dateTimeRange1.Equals(dateTimeRange2));
+			return (x.Equals(y));
 		}
 
 		public static bool operator !=(DateTimeRange first, DateTimeRange second)
@@ -59,7 +59,7 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin)
 		{
-			return new DateTimeRange(range.End, new TimeSpan(range.Begin.Hours + begin.Hours, range.Begin.Minutes + begin.Minutes, range.Begin.Seconds + begin.Seconds));
+			return new DateTimeRange(range.End, new TimeSpan().Add(range.Begin + begin));
 		}
 
 		public static IEnumerable<DateTimeRange> Create(IDictionary<DateTime, bool> pulse)
@@ -121,7 +121,7 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public override string ToString()
 		{
-			return $"Start - {Start.ToString(CultureInfo.InvariantCulture)}; End - {End.ToString(CultureInfo.InvariantCulture)}";
+			return $"({Begin.ToString()}) - ({End.ToString()})";
 		}
 	}
 }
