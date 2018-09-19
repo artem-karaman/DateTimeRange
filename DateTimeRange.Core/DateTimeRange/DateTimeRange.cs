@@ -9,6 +9,7 @@ namespace DateTimeRangeCore.DateTimeRange
 	{
 		private readonly DateTime end;
 		private readonly TimeSpan duration;
+		private readonly DateTime start;
 
 		public DateTime End => end;
 		public TimeSpan Begin => duration;
