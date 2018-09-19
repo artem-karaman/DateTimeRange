@@ -5,32 +5,24 @@ using System.Linq;
 
 namespace DateTimeRangeCore.DateTimeRange
 {
-	public class DateTimeRange : IEquatable<DateTimeRange>
+	public struct DateTimeRange : IEquatable<DateTimeRange>
 	{
-		private readonly DateTime end;
-		private readonly TimeSpan duration;
-		private readonly DateTime start;
-
-		public DateTime End => end;
-		public TimeSpan Begin => duration;
+		public DateTime End { get; }
+		public TimeSpan Begin { get; }
+		public TimeSpan Start { get; }
 
 		public DateTimeRange(DateTime end, TimeSpan duration)
 		{
-			this.end = end;
-			this.duration = duration;
+			End = end;
+			Begin = duration;
+			Start = new TimeSpan(end.Hour + duration.Hours, end.Minute + duration.Minutes, end.Second + duration.Seconds);
 		}
 
 		public DateTimeRange(DateTime start, DateTime end)
 		{
-			this.end = end;
-			this.duration = end - start;
-			
-		}
-
-		public DateTimeRange(TimeSpan duration, DateTime end)
-		{
-			this.end = end;
-			this.duration = duration;
+			End = end;
+			Begin = end - start;
+			Start = new TimeSpan(start.Hour, start.Minute, start.Second);
 		}
 
 		public bool Equals(DateTimeRange other)
@@ -60,7 +52,7 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin)
 		{
-			return new DateTimeRange(range.End, new TimeSpan().Add(range.Begin + begin));
+			return new DateTimeRange(range.End, new TimeSpan(range.Begin.Hours + begin.Hours, range.Begin.Minutes + begin.Minutes, range.Begin.Seconds + begin.Seconds));
 		}
 
 		public static IEnumerable<DateTimeRange> Create(IDictionary<DateTime, bool> pulse)
@@ -122,7 +114,7 @@ namespace DateTimeRangeCore.DateTimeRange
 
 		public override string ToString()
 		{
-			return $"({Begin.ToString()}) - ({End.ToString()})";
+			return $"({Begin:hh\\:mm}) - ({End.ToString(CultureInfo.InvariantCulture)})";
 		}
 	}
 }

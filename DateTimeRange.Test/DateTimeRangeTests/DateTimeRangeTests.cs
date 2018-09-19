@@ -100,6 +100,8 @@ namespace DateTimeRangeTest.Test
 			var range3 = new DateTimeRange(range2.End.AddMinutes(30), TimeSpan.FromMinutes(30));     // 03:00 - 03:30
 			var range3split = new DateTimeRange(range3.End, TimeSpan.FromMinutes(30));               // 03:30 - 04:00
 
+			var s = range3split.Begin;
+
 			// act
 			var merge = (new[] { range1, range2, range3, range1plus, range3split }).Merge().ToArray();
 
