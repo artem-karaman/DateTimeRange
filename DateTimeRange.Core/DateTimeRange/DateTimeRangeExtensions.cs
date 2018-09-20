@@ -10,8 +10,6 @@ namespace DateTimeRangeCore.DateTimeRange
 	{
 		public static IEnumerable<DateTimeRange> Merge(this IEnumerable<DateTimeRange> range)
 		{
-			var ran = range;
-
 			return null;
 		}
 	}

@@ -5,34 +5,22 @@ using System.Linq;
 
 namespace DateTimeRangeCore.DateTimeRange
 {
-	public class DateTimeRange : IEquatable<DateTimeRange>
+	public struct DateTimeRange : IEquatable<DateTimeRange>
 	{
-		private readonly DateTime end;
-		private readonly TimeSpan duration;
-		private readonly DateTime start;
-
-		public DateTime End => end;
-		public TimeSpan Begin => duration;
-
-		public DateTimeRange(DateTime end, TimeSpan duration)
+		public DateTime End { get; }
+		public DateTime Begin { get; }
+		public TimeSpan Duration { get; }
+		public DateTimeRange(DateTime start, TimeSpan duration)
 		{
-			this.end = end;
-			this.duration = duration;
+			this = new DateTimeRange(start, start + duration);
 		}
 
-		public DateTimeRange(DateTime start, DateTime end)
+		public DateTimeRange(DateTime end, DateTime start)
 		{
-			this.end = end;
-			this.duration = end - start;
-			
+			Begin = start;
+			End = end;
+			Duration = end - start;
 		}
-
-		public DateTimeRange(TimeSpan duration, DateTime end)
-		{
-			this.end = end;
-			this.duration = duration;
-		}
-
 		public bool Equals(DateTimeRange other)
 		{
 			return Begin == other.Begin && End == other.End;
@@ -43,14 +31,14 @@ namespace DateTimeRangeCore.DateTimeRange
 			return (x.Equals(y));
 		}
 
-		public static bool operator !=(DateTimeRange first, DateTimeRange second)
+		public static bool operator !=(DateTimeRange x, DateTimeRange y)
 		{
-			return !(first == second);
+			return !(x == y);
 		}
 
 		public override int GetHashCode()
 		{
-			return End.GetHashCode();
+			return Begin.GetHashCode();
 		}
 
 		public override bool Equals(object obj)
@@ -58,9 +46,9 @@ namespace DateTimeRangeCore.DateTimeRange
 			return obj != null && Equals((DateTimeRange)obj);
 		}
 
-		public static DateTimeRange operator +(DateTimeRange range, TimeSpan begin)
+		public static DateTimeRange operator +(DateTimeRange range, TimeSpan duration)
 		{
-			return new DateTimeRange(range.End, new TimeSpan().Add(range.Begin + begin));
+			return new DateTimeRange(range.Begin, range.End + duration);
 		}
 
 		public static IEnumerable<DateTimeRange> Create(IDictionary<DateTime, bool> pulse)
@@ -115,7 +103,7 @@ namespace DateTimeRangeCore.DateTimeRange
 			return result;
 		}
 
-		private static DateTimeRange GetDateTimeRange<T>(List<KeyValuePair<DateTime, T>> items)
+		private static DateTimeRange GetDateTimeRange<T>(IReadOnlyCollection<KeyValuePair<DateTime, T>> items)
 		{
 			return new DateTimeRange (items.First().Key, items.Last().Key);
 		}

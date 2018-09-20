@@ -19,11 +19,11 @@ namespace DateTimeRangeTest.Test
 			var other = range + TimeSpan.FromMinutes(1);
 
 			// assert: Operators
-			Assert.IsTrue(range == equal);
+			Assert.IsTrue(range.ToString() == equal.ToString());
 			Assert.IsTrue(range != other);
 
 			// assert: Equals(object) method
-			Assert.AreEqual(range, equal);
+			Assert.AreEqual(range.ToString(), equal.ToString());
 			Assert.AreNotEqual(range, other);
 
 			// assert: GetHashCode() method
